@@ -3,7 +3,9 @@ local utils = require 'utils'
 
 local Player = require "gameobjects.Player"
 local SomeObject = require "gameobjects.SomeCollisionObject"
- 
+
+DebugColliders = true
+
 local game = {}
 local player
 local someObject
@@ -38,6 +40,15 @@ end
 function game:update(dt)
     player:update(dt)
     someObject:update(dt)
+    
+    local playerCollider = player:getComponent("Collider")
+    local enemyCollider = someObject:getComponent("Collider")
+    if playerCollider and enemyCollider then
+        if playerCollider:checkCollision(enemyCollider) then
+            print("Collision detected!")
+            -- Handle collision (e.g., stop movement, reduce health, etc.)
+        end
+    end
 end
 
 function game:leave()

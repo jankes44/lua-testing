@@ -30,7 +30,8 @@ end
 
 -- Optional: draw the collider for debugging purposes.
 function Collider:draw()
-    love.graphics.setColor(1, 0, 0, 0.5)  -- red with some transparency
+    if not DebugColliders then return end
+    love.graphics.setColor(1, 0, 0, 1)  -- red with some transparency
     love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
     love.graphics.setColor(1, 1, 1, 1)    -- reset to white
 end
