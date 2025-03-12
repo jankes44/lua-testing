@@ -14,4 +14,11 @@ function Player:init(x, y)
     self:addComponent(Movement(400))
 end
 
+function Player:update(dt)
+    BaseEntity.update(self, dt) -- base class update method (super)
+
+    -- Additional behaviour
+    print("additional behaviour")
+end
+
 return Player

@@ -1,8 +1,9 @@
 local Movement = Class{}
 
-function Movement:init(speed)
+function Movement:init(speed, on_input_callback)
     self.type = "InputComponent"  -- Identifier for retrieval if needed
     self.speed = speed or 200     -- Movement speed in pixels per second
+    self.on_input_callback = on_input_callback
 end
 
 function Movement:update(dt)
@@ -10,6 +11,7 @@ function Movement:update(dt)
     if transform then
         if love.keyboard.isDown("left") then
             transform.x = transform.x - self.speed * dt
+            print("Left")
         end
         if love.keyboard.isDown("right") then
             transform.x = transform.x + self.speed * dt

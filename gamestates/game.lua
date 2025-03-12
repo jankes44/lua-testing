@@ -9,6 +9,7 @@ local player
 function game:enter()
     -- Initialize game state
     Signal.emit('game_entered')
+    print("game state entered")
 
     player = Player(100, 200)
 end
