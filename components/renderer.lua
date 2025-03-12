@@ -1,10 +1,11 @@
 local Renderer = Class{}
 
-function Renderer:init(image, offsetX, offsetY)
+function Renderer:init(args)
     self.type = "Renderer"  -- Component identifier
-    self.image = image      -- love.graphics image, if provided
-    self.offsetX = offsetX or 0
-    self.offsetY = offsetY or 0
+    self.color = args.color or {1,1,1}
+    self.ysortorigin = args.ysortorigin or 0
+    self.offsetX = args.offsetX or 0
+    self.offsetY = args.offsetY or 0
 end
 
 function Renderer:draw()
@@ -16,14 +17,10 @@ function Renderer:draw()
         local rotation = transform.rotation or 0
         local scale = transform.scale or 1
 
-        if self.image then
-            -- Draw the image using the transform values
-            love.graphics.draw(self.image, x + self.offsetX, y + self.offsetY, rotation, scale, scale)
-        else
-            -- Fallback: draw a simple rectangle if no image is provided
-            love.graphics.rectangle("fill", x + self.offsetX, y + self.offsetY, 50, 50)
-        end
+        love.graphics.setColor(self.color)
+        love.graphics.rectangle("fill", x + self.offsetX, y + self.offsetY, 50, 50)
     end
+    love.graphics.setColor(1,1,1)
 end
 
 return Renderer
