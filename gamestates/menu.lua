@@ -18,32 +18,18 @@ function menu:enter()
 end
 
 function menu:update(dt)
-    if startButton then startButton:update(dt) end
-    if exitButton then exitButton:update(dt) end
+    startButton:update(dt)
+    exitButton:update(dt)
 end
 
 function menu:draw()
-    if startButton then startButton:draw() end
-    if exitButton then exitButton:draw() end
+    startButton:draw()
+    exitButton:draw()
 end
 
 function menu:mousepressed(x, y, button)
-    if startButton then startButton:mousepressed(x, y, button) end
-    if exitButton then exitButton:mousepressed(x, y, button) end
-end
-
-function menu:leave()
-    startButton = nil
-    exitButton = nil
-end
-
-function menu:keypressed(key)
-    if key == 'return' then
-        Gamestate.switch(States.game)
-    end
-    if key == 'escape' then
-        love.event.quit()
-    end
+    startButton:mousepressed(x, y, button)
+    exitButton:mousepressed(x, y, button)
 end
 
 return menu

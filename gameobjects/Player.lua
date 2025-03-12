@@ -18,7 +18,6 @@ function Player:update(dt)
     BaseEntity.update(self, dt) -- base class update method (super)
 
     -- Additional behaviour
-    print("additional behaviour")
 end
 
 return Player

@@ -12,4 +12,8 @@ function intro:keypressed(key)
     Gamestate.switch(States.menu)
 end
 
+function intro:mousepressed()
+    Gamestate.switch(States.menu)
+end
+
 return intro

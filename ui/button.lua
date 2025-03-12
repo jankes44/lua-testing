@@ -35,6 +35,9 @@ function Button:draw()
     local textWidth = font:getWidth(self.text)
     local textHeight = font:getHeight(self.text)
     love.graphics.print(self.text, self.x + (self.width - textWidth) / 2, self.y + (self.height - textHeight) / 2)
+
+     -- Reset the color to white (default) after drawing the button
+     love.graphics.setColor(1, 1, 1)
 end
 
 -- Mousepressed event handler: if the button is clicked, call its onClick function
