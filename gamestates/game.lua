@@ -1,5 +1,5 @@
-local Signal = require 'libs.hump.signal'
-local utils = require 'utils'
+local Signal = require 'libraries.hump.signal'
+local utils = require 'libraries.sti.utils'
 
 local Player = require "gameobjects.Player"
 local SomeObject = require "gameobjects.SomeCollisionObject"
@@ -16,6 +16,12 @@ function game:enter()
     Signal.emit('game_entered')
     print("game state entered")
 
+    wf = require 'libraries.windfield'
+    world = wf.newWorld(0, 0)
+
+    sti = require 'libraries.sti'
+    gameMap = sti('maps/testmap.lua')
+
     player = Player(100, 200)
     someObject = SomeObject(300, 200)
     table.insert(gameentities, player)
@@ -23,32 +29,27 @@ function game:enter()
 end
 
 function game:draw()
-    love.graphics.printf("Game is running, press escape to quit to menu", 0, 0, love.graphics.getWidth(), "left")
-    
+    gameMap:draw()
     table.sort(gameentities, function(a, b)
         local renderer_a = a:getComponent("Renderer")
         local renderer_b = b:getComponent("Renderer")
-        return a:getComponent("Transform").y - renderer_a.ysortorigin < b:getComponent("Transform").y - renderer_b.ysortorigin
+        local _, ytransform_a = a:getComponent("Transform").collider:getPosition()
+        local _, ytransform_b = b:getComponent("Transform").collider:getPosition()
+        return ytransform_a - renderer_a.ysortorigin < ytransform_b - renderer_b.ysortorigin
     end)
 
     -- Draw all entities
     for _, entity in ipairs(gameentities) do
         entity:draw()
     end
+    world:draw()
 end
 
 function game:update(dt)
     player:update(dt)
     someObject:update(dt)
     
-    local playerCollider = player:getComponent("Collider")
-    local enemyCollider = someObject:getComponent("Collider")
-    if playerCollider and enemyCollider then
-        if playerCollider:checkCollision(enemyCollider) then
-            print("Collision detected!")
-            -- Handle collision (e.g., stop movement, reduce health, etc.)
-        end
-    end
+    world:update(dt)
 end
 
 function game:leave()

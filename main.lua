@@ -1,7 +1,7 @@
 _G.love = require 'love'
-_G.Class = require 'libs.hump.class'
-_G.Signal = require 'libs.hump.signal'
-_G.Gamestate = require 'libs.hump.gamestate'
+_G.Class = require 'libraries.hump.class'
+_G.Signal = require 'libraries.hump.signal'
+_G.Gamestate = require 'libraries.hump.gamestate'
 _G.Sounds = require 'sfx.sounds'
 
 DrawDebug = false

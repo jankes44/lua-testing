@@ -9,14 +9,16 @@ function Collider:init(width, height, offsetX, offsetY)
     self.offsetY = offsetY or 0
     self.x = 0                   -- These will be updated from the Transform
     self.y = 0
+    self.wfCollider = world:newBSGRectangleCollider(self.x, self.y, 50, 50, 4)
+    self.wfCollider:setFixedRotation(true)
 end
 
 -- Update collider position based on the entity's Transform component.
 function Collider:update(dt)
     local transform = self.entity:getComponent("Transform")
     if transform then
-        self.x = transform.x + self.offsetX
-        self.y = transform.y + self.offsetY
+        self.wfCollider.x = transform.x + self.offsetX
+        self.wfCollider.y = transform.y + self.offsetY
     end
 end
 

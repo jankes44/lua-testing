@@ -1,4 +1,4 @@
-local Class = require 'libs.hump.class'
+local Class = require 'libraries.hump.class'
 
 local Sound = Class{}
 

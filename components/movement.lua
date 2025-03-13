@@ -9,18 +9,29 @@ end
 function Movement:update(dt)
     local transform = self.entity:getComponent("Transform")
     if transform then
+        local dx, dy = 0, 0
+
         if love.keyboard.isDown("a") then
-            transform.x = transform.x - self.speed * dt
+            dx = dx - 1
         end
         if love.keyboard.isDown("d") then
-            transform.x = transform.x + self.speed * dt
+            dx = dx + 1
         end
         if love.keyboard.isDown("w") then
-            transform.y = transform.y - self.speed * dt
+            dy = dy - 1
         end
         if love.keyboard.isDown("s") then
-            transform.y = transform.y + self.speed * dt
+            dy = dy + 1
         end
+
+        -- Normalize the vector if movement exists
+        local length = math.sqrt(dx * dx + dy * dy)
+        if length > 0 then
+            dx = dx / length
+            dy = dy / length
+        end
+
+        transform.collider:setLinearVelocity(dx * self.speed * dt, dy * self.speed * dt)
     end
 end
 
