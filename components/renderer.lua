@@ -12,10 +12,10 @@ end
 
 function Renderer:draw()
     -- Access the entity's Transform component
-    local transform = self.entity:getComponent("Transform")
-    if transform then
-        local x = math.floor(transform:getX() + self.offsetX)
-        local y = math.floor(transform:getY() + self.offsetY)
+    local body = self.entity:getComponent("Body")
+    if body then
+        local x = math.floor(body:getX() + self.offsetX)
+        local y = math.floor(body:getY() + self.offsetY)
 
         love.graphics.setColor(self.color)
         love.graphics.rectangle("fill", x - (self.width/2) + self.offsetX, y - (self.height/2) + self.offsetY, self.width, self.height)

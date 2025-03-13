@@ -7,8 +7,8 @@ function Movement:init(speed, on_input_callback)
 end
 
 function Movement:update(dt)
-    local transform = self.entity:getComponent("Transform")
-    if transform then
+    local body = self.entity:getComponent("Body")
+    if body then
         local dx, dy = 0, 0
 
         if love.keyboard.isDown("a") then
@@ -31,7 +31,7 @@ function Movement:update(dt)
             dy = dy / length
         end
 
-        transform.collider:setLinearVelocity(dx * self.speed * dt, dy * self.speed * dt)
+        body.collider:setLinearVelocity(dx * self.speed, dy * self.speed)
     end
 end
 

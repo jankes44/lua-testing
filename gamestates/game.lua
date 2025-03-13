@@ -1,6 +1,5 @@
 local Signal = require 'libraries.hump.signal'
-local utils = require 'libraries.sti.utils'
-
+local Camera = require 'libraries.hump.camera'
 local Player = require "gameobjects.Player"
 local SomeObject = require "gameobjects.SomeCollisionObject"
 
@@ -12,9 +11,8 @@ local someObject
 local gameentities = {}
 
 function game:enter()
-    -- Initialize game state
-    Signal.emit('game_entered')
-    print("game state entered")
+    cam = Camera()
+    cam:zoom(2)
 
     wf = require 'libraries.windfield'
     world = wf.newWorld(0, 0)
@@ -26,23 +24,33 @@ function game:enter()
     someObject = SomeObject(300, 200)
     table.insert(gameentities, player)
     table.insert(gameentities, someObject)
+
+    walls = {}
+    if gameMap.layers["Walls"] then
+        for i, obj in pairs(gameMap.layers["Walls"].objects) do
+            local wall = world:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
+            wall:setType("static")
+            table.insert(walls, wall)
+        end
+    end
 end
 
 function game:draw()
-    gameMap:draw()
-    table.sort(gameentities, function(a, b)
-        local renderer_a = a:getComponent("Renderer")
-        local renderer_b = b:getComponent("Renderer")
-        local _, ytransform_a = a:getComponent("Transform").collider:getPosition()
-        local _, ytransform_b = b:getComponent("Transform").collider:getPosition()
-        return ytransform_a - renderer_a.ysortorigin < ytransform_b - renderer_b.ysortorigin
-    end)
+    cam:attach()
+        gameMap:drawLayer(gameMap.layers["ground"])
+        gameMap:drawLayer(gameMap.layers["objects"])
+        table.sort(gameentities, function(a, b)
+            local renderer_a = a:getComponent("Renderer")
+            local renderer_b = b:getComponent("Renderer")
+            return a:getComponent("Body"):getY() - renderer_a.ysortorigin < b:getComponent("Body"):getY() - renderer_b.ysortorigin
+        end)
 
-    -- Draw all entities
-    for _, entity in ipairs(gameentities) do
-        entity:draw()
-    end
-    world:draw()
+        -- Draw all entities
+        for _, entity in ipairs(gameentities) do
+            entity:draw()
+        end
+        world:draw()
+    cam:detach()
 end
 
 function game:update(dt)
@@ -50,6 +58,15 @@ function game:update(dt)
     someObject:update(dt)
     
     world:update(dt)
+    
+    cam:lookAt(player:getComponent("Body"):getX(), player:getComponent("Body"):getY())
+    
+    local w = love.graphics.getWidth()
+    local h = love.graphics.getHeight()
+
+    if cam.x < w/2 then
+        cam.x = w/2
+    end
 end
 
 function game:leave()
