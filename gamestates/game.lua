@@ -9,10 +9,11 @@ local game = {}
 local player
 local someObject
 local gameentities = {}
+local cameraZoom = 3
 
 function game:enter()
     cam = Camera()
-    cam:zoom(2)
+    cam:zoom(cameraZoom)
 
     wf = require 'libraries.windfield'
     world = wf.newWorld(0, 0)
@@ -35,6 +36,37 @@ function game:enter()
     end
 end
 
+function game:update(dt)
+    player:update(dt)
+    someObject:update(dt)
+    
+    world:update(dt)
+    
+    cam:lookAt(player:getComponent("Body"):getX(), player:getComponent("Body"):getY())
+    
+    local w = love.graphics.getWidth()/cameraZoom
+    local h = love.graphics.getHeight()/cameraZoom
+    -- left border
+    if cam.x < w/2 then
+        cam.x = w/2
+    end
+    -- top border
+    if cam.y < h/2 then
+        cam.y = h/2
+    end
+    
+    local mapW = gameMap.width * gameMap.tilewidth
+    local mapH = gameMap.height * gameMap.tileheight
+    -- right border
+    if cam.x > (mapW - w/2) then
+        cam.x = (mapW - w/2)
+    end
+    -- bottom border
+    if cam.y > (mapH - h/2) then
+        cam.y = (mapH - h/2)
+    end
+end
+
 function game:draw()
     cam:attach()
         gameMap:drawLayer(gameMap.layers["ground"])
@@ -51,22 +83,7 @@ function game:draw()
         end
         world:draw()
     cam:detach()
-end
-
-function game:update(dt)
-    player:update(dt)
-    someObject:update(dt)
-    
-    world:update(dt)
-    
-    cam:lookAt(player:getComponent("Body"):getX(), player:getComponent("Body"):getY())
-    
-    local w = love.graphics.getWidth()
-    local h = love.graphics.getHeight()
-
-    if cam.x < w/2 then
-        cam.x = w/2
-    end
+    love.graphics.print("game is running, press 'esc' to exit")
 end
 
 function game:leave()
