@@ -4,7 +4,7 @@ function Body:init(args)
     self.type = "Body"  -- Identifier used to retrieve this component
     self.rotation = args.rotation or 0
     self.scale = args.scale or 1
-    self.collider = world:newBSGRectangleCollider(args.x, args.y, args.width, args.height, args.boxRadius or 0)
+    self.collider = args.world:newBSGRectangleCollider(args.x, args.y, args.width, args.height, args.boxRadius or 0)
     self.collider:setFixedRotation(true)
     if args.collisionType == "sensor" then
         self.collider:setSensor(true)

@@ -1,7 +1,7 @@
 local Movement = Class{}
 
 function Movement:init(speed, on_input_callback)
-    self.type = "InputComponent"  -- Identifier for retrieval if needed
+    self.type = "Movement"  -- Identifier for retrieval if needed
     self.speed = speed or 200     -- Movement speed in pixels per second
     self.on_input_callback = on_input_callback
 end

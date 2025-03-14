@@ -5,17 +5,17 @@ local Movement = require "components.movement"
 
 local Object = Class{__includes = BaseEntity}
 
-function Object:init(x, y)
+function Object:init(world, x, y)
     -- Call the BaseEntity initializer with a default name "Player"
     BaseEntity.init(self, "Player")
     
     self:addComponent(Body({ 
-        world = world, collisionType = "static", x = x or 0, y = y or 0, width = 80, height = 40, rotation = 0, scale = 1, linearDamping = 2
+        world = world, collisionType = "sensor", x = x or 0, y = y or 0, width = 80, height = 40, rotation = 0, scale = 1, linearDamping = 2
     }))
     self:addComponent(Renderer({ 
-        color = {1,0.5,0}, ysortorigin = 5, width = 80, height = 40 
+        color = {1,0.5,0}, ysortorigin = -10, width = 80, height = 40 
     }))
-    -- self:addComponent(Movement(1000))
+    -- self:addComponent(Movement(200))
 end
 
 function Object:update(dt)

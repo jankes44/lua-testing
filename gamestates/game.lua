@@ -2,27 +2,44 @@ local Signal = require 'libraries.hump.signal'
 local Camera = require 'libraries.hump.camera'
 local Player = require "gameobjects.Player"
 local SomeObject = require "gameobjects.SomeCollisionObject"
+local Button = require "ui.button"
+local sti = require 'libraries.sti'
+local wf = require 'libraries.windfield'
 
 DebugColliders = true
 
 local game = {}
+local world
+local gameMap
 local player
 local someObject
 local gameentities = {}
 local cameraZoom = 3
 
+-- buttons used for debug for now
+local uibuttons = {
+    Button:new("speed-increase", 20, 100, 100, 50, function()
+        player:getComponent("Movement").speed = player:getComponent("Movement").speed + 20
+    end),
+    Button:new("speed-decrease", 20, 155, 100, 50, function()
+        player:getComponent("Movement").speed = player:getComponent("Movement").speed - 20
+    end),
+    Button:new("toggle sensor object", 20, 210, 150, 50, function()
+        local collider = someObject:getComponent("Body").collider
+        collider:setSensor(not collider:isSensor())
+    end),
+}
+
 function game:enter()
-    cam = Camera()
-    cam:zoom(cameraZoom)
+    Cam = Camera()
+    Cam:zoom(cameraZoom)
 
-    wf = require 'libraries.windfield'
     world = wf.newWorld(0, 0)
-
-    sti = require 'libraries.sti'
+    
     gameMap = sti('maps/testmap.lua')
 
-    player = Player(100, 200)
-    someObject = SomeObject(300, 200)
+    player = Player(world, 100, 200)
+    someObject = SomeObject(world, 300, 200)
     table.insert(gameentities, player)
     table.insert(gameentities, someObject)
 
@@ -42,33 +59,38 @@ function game:update(dt)
     
     world:update(dt)
     
-    cam:lookAt(player:getComponent("Body"):getX(), player:getComponent("Body"):getY())
+    Cam:lookAt(player:getComponent("Body"):getX(), player:getComponent("Body"):getY())
     
+    for _, btn in ipairs(uibuttons) do
+        btn:update(dt)
+    end
+
+    -- camera borders
     local w = love.graphics.getWidth()/cameraZoom
     local h = love.graphics.getHeight()/cameraZoom
     -- left border
-    if cam.x < w/2 then
-        cam.x = w/2
+    if Cam.x < w/2 then
+        Cam.x = w/2
     end
     -- top border
-    if cam.y < h/2 then
-        cam.y = h/2
+    if Cam.y < h/2 then
+        Cam.y = h/2
     end
     
     local mapW = gameMap.width * gameMap.tilewidth
     local mapH = gameMap.height * gameMap.tileheight
     -- right border
-    if cam.x > (mapW - w/2) then
-        cam.x = (mapW - w/2)
+    if Cam.x > (mapW - w/2) then
+        Cam.x = (mapW - w/2)
     end
     -- bottom border
-    if cam.y > (mapH - h/2) then
-        cam.y = (mapH - h/2)
+    if Cam.y > (mapH - h/2) then
+        Cam.y = (mapH - h/2)
     end
 end
 
 function game:draw()
-    cam:attach()
+    Cam:attach()
         gameMap:drawLayer(gameMap.layers["ground"])
         gameMap:drawLayer(gameMap.layers["objects"])
         table.sort(gameentities, function(a, b)
@@ -82,8 +104,13 @@ function game:draw()
             entity:draw()
         end
         world:draw()
-    cam:detach()
+    Cam:detach()
+
+    -- hud debug things
     love.graphics.print("game is running, press 'esc' to exit")
+    for _, btn in ipairs(uibuttons) do
+        btn:draw()
+    end
 end
 
 function game:leave()
@@ -95,6 +122,12 @@ end
 function game:keypressed(key)
     if key == 'escape' then
         Gamestate.switch(States.menu)
+    end
+end
+
+function game:mousepressed(x,y,button)
+    for _, btn in ipairs(uibuttons) do
+        btn:mousepressed(x,y,button)
     end
 end
 

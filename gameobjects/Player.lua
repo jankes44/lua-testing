@@ -5,7 +5,7 @@ local Movement = require "components.movement"
 
 local Player = Class{__includes = BaseEntity}
 
-function Player:init(x, y)
+function Player:init(world, x, y)
     -- Call the BaseEntity initializer with a default name "Player"
     BaseEntity.init(self, "Player")
     
